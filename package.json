@@ -1,0 +1,22 @@
+{
+  "name": "reading-duration-bookmarklet",
+  "version": "0.1.0",
+  "description": "Dynamic Bookmarklet to detect the reading time of an article",
+  "main": "readingDurationBookmarklet.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomlutzenberger/readingDurationBookmarklet.git"
+  },
+  "author": "Tom Lutzenberger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomlutzenberger/readingDurationBookmarklet/issues"
+  },
+  "homepage": "https://tomlutzenberger.github.io/readingDurationBookmarklet/",
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
