@@ -17,6 +17,7 @@ const readingDurationBookmarklet = () => {
 
     'use strict';
 
+    // Constants to prevent using magic numbers
     const ZERO = 0;
     const FIRST = 0;
 
@@ -29,6 +30,12 @@ const readingDurationBookmarklet = () => {
 
 
 
+    /**
+     * @method getSite
+     * @description Get all officially supported sites and their article selectors
+     *
+     * @returns {Object[]}
+     */
     const getSite = () => {
         return [{
             name: 'dev.to',
@@ -41,6 +48,12 @@ const readingDurationBookmarklet = () => {
 
 
 
+    /**
+     * @method getIgnoredTags
+     * @description Get an array with all elements that should be ignored (stripped) from content
+     *
+     * @returns {String[]}
+     */
     const getIgnoredTags = () => {
         return [
             'code',
@@ -50,6 +63,12 @@ const readingDurationBookmarklet = () => {
 
 
 
+    /**
+     * @method detectSite
+     * @description Detect the site we are on. If not supported, use default site config
+     *
+     * @returns {Object}
+     */
     const detectSite = () => {
         const site = getSite().filter((siteObj) => {
             const pattern = new RegExp(siteObj.name, 'im');
@@ -62,6 +81,13 @@ const readingDurationBookmarklet = () => {
 
 
 
+    /**
+     * @method getArticleContent
+     * @description Get article content as plain text or false if not found
+     *
+     * @param {String} selector - The selector of the content element
+     * @returns {(Boolean|String)}
+     */
     const getArticleContent = (selector) => {
         let article = document.querySelector(selector);
 
@@ -74,6 +100,13 @@ const readingDurationBookmarklet = () => {
 
 
 
+    /**
+     * @method stripIgnoredTags
+     * @description Strip all ignored tags from content
+     *
+     * @param {Element} content - (DOM-)Element with all the content
+     * @returns {Element}
+     */
     const stripIgnoredTags = (content) => {
         const tagSelectorList = getIgnoredTags().join(',');
         const nodeList = content.querySelectorAll(tagSelectorList);
@@ -89,6 +122,13 @@ const readingDurationBookmarklet = () => {
 
 
 
+    /**
+     * @method cleanupContent
+     * @description Remove all unnecessary whitespaces and HTML tags and return plain text
+     *
+     * @param {Element} content - (DOM-)Element with all the content
+     * @returns {String}
+     */
     const cleanupContent = (content) => {
         let cleanedContent = content.textContent.trim();
         cleanedContent = cleanedContent.replace(/\s+/, ' ');
@@ -99,12 +139,26 @@ const readingDurationBookmarklet = () => {
 
 
 
+    /**
+     * @method countWords
+     * @description Count the words in the content text
+     *
+     * @param {String} content - Plain text content
+     * @returns {Integer}
+     */
     const countWords = (content) => {
         return content.split(' ').length;
     };
 
 
 
+    /**
+     * @method calculateReadDuration
+     * @description Calculate reading duration based on average words-per-minute
+     *
+     * @param {String} content - Plain text content
+     * @returns {Float}
+     */
     const calculateReadDuration = (content) => {
         const durationSec = (countWords(content) / AVG_WORDS_PER_MIN) * SEC_PER_MIN;
 
@@ -112,6 +166,14 @@ const readingDurationBookmarklet = () => {
     };
 
 
+
+    /**
+     * @method formatReadDuration
+     * @description Format duration to readable text
+     *
+     * @param {Float} seconds - Calculated amount of seconds to read
+     * @returns {String}
+     */
     const formatReadDuration = (seconds) => {
         let minutesAmount = 0;
         let minutes = 0;
@@ -125,12 +187,17 @@ const readingDurationBookmarklet = () => {
             minutes = hours > ZERO && minutesAmount < TWO_DIGIT_SEC ? '0' + minutesAmount : minutesAmount;
 
             return hours > ZERO ? `${hours}hrs ${minutes}min` : `${minutes}min`;
-
         }
     };
 
 
 
+    /**
+     * @method execute
+     * @description Execute script and alert result
+     *
+     * @returns {void}
+     */
     const execute = () => {
         const site = detectSite();
         const article = getArticleContent(site.selector);
@@ -144,6 +211,7 @@ const readingDurationBookmarklet = () => {
 
         alert(message);
     };
+
 
     return {execute};
 };
