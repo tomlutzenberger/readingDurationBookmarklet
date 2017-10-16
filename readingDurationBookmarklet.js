@@ -1,5 +1,5 @@
 /*!
- * readingDurationBookmarklet v0.1.2
+ * readingDurationBookmarklet v0.1.3
  * Dynamic Bookmarklet to detect the reading time of an article
  *
  * Copyright (c) 2017 - Tom Lutzenberger (lutzenbergerthomas at gmail dot com)
@@ -56,8 +56,25 @@ const readingDurationBookmarklet = () => {
      */
     const getIgnoredTags = () => {
         return [
+            'audio',
+            'aside',
+            'button',
             'code',
-            'pre'
+            'fieldset',
+            'form',
+            'iframe',
+            'input',
+            'label',
+            'legend',
+            'menu',
+            'nav',
+            'noscript',
+            'object',
+            'pre',
+            'progress',
+            'script',
+            'style',
+            'video'
         ];
     };
 
