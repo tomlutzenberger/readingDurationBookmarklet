@@ -1,6 +1,6 @@
 {
   "name": "reading-duration-bookmarklet",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Dynamic Bookmarklet to detect the reading time of an article",
   "main": "readingDurationBookmarklet.js",
   "scripts": {

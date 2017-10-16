@@ -1,5 +1,5 @@
 /*!
- * readingDurationBookmarklet v0.1.1
+ * readingDurationBookmarklet v0.1.2
  * Dynamic Bookmarklet to detect the reading time of an article
  *
  * Copyright (c) 2017 - Tom Lutzenberger (lutzenbergerthomas at gmail dot com)
@@ -131,8 +131,8 @@ const readingDurationBookmarklet = () => {
      */
     const cleanupContent = (content) => {
         let cleanedContent = content.textContent.trim();
-        cleanedContent = cleanedContent.replace(/\s+/, ' ');
-        cleanedContent = cleanedContent.replace(/[^\w\s]/, ' ');
+        cleanedContent = cleanedContent.replace(/[^\w\s]/g, ' ');
+        cleanedContent = cleanedContent.replace(/\s+/g, ' ');
 
         return cleanedContent;
     };
