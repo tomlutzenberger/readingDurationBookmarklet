@@ -1,5 +1,5 @@
 /*!
- * readingDurationBookmarklet v0.1.0
+ * readingDurationBookmarklet v0.1.1
  * Dynamic Bookmarklet to detect the reading time of an article
  *
  * Copyright (c) 2017 - Tom Lutzenberger (lutzenbergerthomas at gmail dot com)
@@ -92,7 +92,7 @@ const readingDurationBookmarklet = () => {
         let article = document.querySelector(selector);
 
         if (article !== null) {
-            return cleanupContent(stripIgnoredTags(article));
+            return cleanupContent(stripIgnoredTags(article.cloneNode(true)));
         }
 
         return false;
@@ -204,7 +204,7 @@ const readingDurationBookmarklet = () => {
         let message = '';
 
         if(!article) {
-            message = 'Something went wrong. Sorry!';
+            message = 'Article has not been found. Sorry!';
         } else {
             message = `${countWords(article)} Words, ${calculateReadDuration(article)}`;
         }
