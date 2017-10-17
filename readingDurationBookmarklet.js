@@ -74,7 +74,12 @@ const readingDurationBookmarklet = () => {
             'progress',
             'script',
             'style',
-            'video'
+            'video',
+            // Comment elements
+            '#disqus_thread',
+            '#comments',
+            '.comments',
+            '.comment'
         ];
     };
 
