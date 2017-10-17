@@ -153,7 +153,7 @@ const readingDurationBookmarklet = () => {
      */
     const cleanupContent = (content) => {
         let cleanedContent = content.textContent.trim();
-        cleanedContent = cleanedContent.replace(/[^\w\s]/g, ' ');
+        cleanedContent = cleanedContent.replace(/[^\w\s./-]/g, ' ');
         cleanedContent = cleanedContent.replace(/\s+/g, ' ');
 
         return cleanedContent;
