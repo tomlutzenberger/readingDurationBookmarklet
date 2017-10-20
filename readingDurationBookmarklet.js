@@ -252,7 +252,9 @@ const readingDurationBookmarklet = () => {
             message = `${countWords(articleContent)} Words ${calculateReadDuration(articleContent)}`;
         }
 
+        /* eslint-disable no-alert */
         alert(message);
+        /* eslint-enable no-alert */
     };
 
 

@@ -23,7 +23,8 @@
     ],
     "no-extra-parens": [
       "error",
-      "all"
+      "all",
+      { "nestedBinaryExpressions": false }
     ],
     "valid-jsdoc": [
       "error",
