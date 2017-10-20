@@ -26,7 +26,7 @@ const readingDurationBookmarklet = () => {
     const SEC_PER_HOUR = 3600;
     const TWO_DIGIT_SEC = 10;
 
-    const defaultSite = { name: 'default', selector: 'article' };
+    const defaultSite = { name: 'default', selector: ['article', '.article', '#article', '.post'] };
 
 
 
@@ -107,11 +107,23 @@ const readingDurationBookmarklet = () => {
      * @method getArticleContent
      * @description Get article content as plain text or false if not found
      *
-     * @param {String} selector - The selector of the content element
+     * @param {(String|Array)} selector - The selector of the content element
      * @returns {(Boolean|String)}
      */
     const getArticleContent = (selector) => {
-        let article = document.querySelector(selector);
+        let article = null;
+
+        if (Array.isArray(selector)) {
+            let index = 0;
+
+            do { // Loop through selector fallbacks until an element is found
+                article = document.querySelector(selector[index]);
+                index++;
+            } while(article !== null && index < selector.length);
+
+        } else {
+            article = document.querySelector(selector);
+        }
 
         if (article !== null) {
             return cleanupContent(stripIgnoredTags(article.cloneNode(true)));
