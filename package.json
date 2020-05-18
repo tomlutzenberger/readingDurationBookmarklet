@@ -37,19 +37,18 @@
     "babel-plugin-minify-type-constructors": "^0.1.2",
     "babili": "^0.1.4",
     "cmd-wrap": "^1.0.4",
-    "copyfiles": "^1.2.0",
-    "eslint": "^4.18.2",
-    "eslint-config-standard": "^10.2.1",
-    "htmlhint": "^0.9.13",
-    "less": "^2.7.2",
-    "less-plugin-clean-css": "^1.5.1",
-    "mocha": "^3.4.2",
+    "copyfiles": "^2.2.0",
+    "eslint": "^7.0.0",
+    "eslint-config-standard": "^14.1.1",
+    "mocha": "^6.2.3",
     "mock-browser": "^0.92.14",
-    "pug-cli": "^1.0.0-alpha6",
-    "pug-lint": "^2.4.0",
-    "rewire": "^2.5.2",
-    "stylelint": "^7.12.0",
-    "stylelint-config-standard": "^16.0.0"
+    "rewire": "^2.5.2"
+  },
+  "peerDependencies": {
+    "eslint-plugin-import": ">=2.18.0",
+    "eslint-plugin-node": ">=9.1.0",
+    "eslint-plugin-promise": ">=4.2.1",
+    "eslint-plugin-standard": ">=4.0.0"
   },
   "dependencies": {
     "bootstrap": "^3.4.1",
