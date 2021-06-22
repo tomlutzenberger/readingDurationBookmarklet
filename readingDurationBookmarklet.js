@@ -1,5 +1,5 @@
 /*!
- * readingDurationBookmarklet v0.1.0
+ * readingDurationBookmarklet v0.1.3
  * Dynamic Bookmarklet to detect the reading time of an article
  *
  * Copyright (c) 2017 - Tom Lutzenberger (lutzenbergerthomas at gmail dot com)
@@ -26,7 +26,11 @@ const readingDurationBookmarklet = () => {
     const SEC_PER_HOUR = 3600;
     const TWO_DIGIT_SEC = 10;
 
-    const defaultSite = { name: 'default', selector: 'article' };
+    const defaultSite = {
+        name: 'default',
+        selector: ['article', '.article', '#article', '.post'],
+        elementBlacklist: []
+    };
 
 
 
@@ -39,25 +43,49 @@ const readingDurationBookmarklet = () => {
     const getSite = () => {
         return [{
             name: 'dev.to',
-            selector: '#article-body'
+            selector: '#article-body',
+            elementBlacklist: []
         }, {
             name: 'medium.com',
-            selector: '.section-content'
+            selector: '.section-content',
+            elementBlacklist: ['.graf--trailing']
         }];
     };
 
 
 
     /**
-     * @method getIgnoredTags
+     * @method getGlobalElementBlacklist
      * @description Get an array with all elements that should be ignored (stripped) from content
      *
      * @returns {String[]}
      */
-    const getIgnoredTags = () => {
+    const getGlobalElementBlacklist = () => {
         return [
+            'audio',
+            'aside',
+            'button',
             'code',
-            'pre'
+            'fieldset',
+            'form',
+            'iframe',
+            'input',
+            'label',
+            'legend',
+            'menu',
+            'nav',
+            'noscript',
+            'object',
+            'pre',
+            'progress',
+            'script',
+            'style',
+            'video',
+            // Comment elements
+            '#disqus_thread',
+            '#comments',
+            '.comments',
+            '.comment'
         ];
     };
 
@@ -85,14 +113,26 @@ const readingDurationBookmarklet = () => {
      * @method getArticleContent
      * @description Get article content as plain text or false if not found
      *
-     * @param {String} selector - The selector of the content element
+     * @param {(String|Array)} selector - The selector of the content element
      * @returns {(Boolean|String)}
      */
     const getArticleContent = (selector) => {
-        let article = document.querySelector(selector);
+        let article = null;
+
+        if (Array.isArray(selector)) {
+            let index = 0;
+
+            do { // Loop through selector fallbacks until an element is found
+                article = document.querySelector(selector[index]);
+                index++;
+            } while(article === null && index < selector.length);
+
+        } else {
+            article = document.querySelector(selector);
+        }
 
         if (article !== null) {
-            return cleanupContent(stripIgnoredTags(article));
+            return article.cloneNode(true);
         }
 
         return false;
@@ -101,15 +141,16 @@ const readingDurationBookmarklet = () => {
 
 
     /**
-     * @method stripIgnoredTags
-     * @description Strip all ignored tags from content
+     * @method stripBlacklistedElements
+     * @description Strip all blacklisted elements from content
      *
-     * @param {Element} content - (DOM-)Element with all the content
+     * @param {Element} contentNode - (DOM-)Element with all the content
+     * @param {Array} siteBlacklist - Array of site-specific blacklisted elements
      * @returns {Element}
      */
-    const stripIgnoredTags = (content) => {
-        const tagSelectorList = getIgnoredTags().join(',');
-        const nodeList = content.querySelectorAll(tagSelectorList);
+    const stripBlacklistedElements = (contentNode, siteBlacklist) => {
+        let elementBlacklist = getGlobalElementBlacklist().concat(siteBlacklist);
+        const nodeList = contentNode.querySelectorAll(elementBlacklist.join(','));
 
         if (nodeList.length > ZERO) {
             nodeList.forEach((nodeElement) => {
@@ -117,7 +158,7 @@ const readingDurationBookmarklet = () => {
             });
         }
 
-        return content;
+        return contentNode;
     };
 
 
@@ -126,13 +167,13 @@ const readingDurationBookmarklet = () => {
      * @method cleanupContent
      * @description Remove all unnecessary whitespaces and HTML tags and return plain text
      *
-     * @param {Element} content - (DOM-)Element with all the content
+     * @param {Element} contentNode - (DOM-)Element with all the content
      * @returns {String}
      */
-    const cleanupContent = (content) => {
-        let cleanedContent = content.textContent.trim();
-        cleanedContent = cleanedContent.replace(/\s+/, ' ');
-        cleanedContent = cleanedContent.replace(/[^\w\s]/, ' ');
+    const cleanupContent = (contentNode) => {
+        let cleanedContent = contentNode.textContent.trim();
+        cleanedContent = cleanedContent.replace(/[^\w\s./-]/g, ' ');
+        cleanedContent = cleanedContent.replace(/\s+/g, ' ');
 
         return cleanedContent;
     };
@@ -200,16 +241,20 @@ const readingDurationBookmarklet = () => {
      */
     const execute = () => {
         const site = detectSite();
-        const article = getArticleContent(site.selector);
+        const articleNode = getArticleContent(site.selector);
+        let articleContent = '';
         let message = '';
 
-        if(!article) {
-            message = 'Something went wrong. Sorry!';
+        if(!articleNode) {
+            message = 'Article has not been found. Sorry!';
         } else {
-            message = `${countWords(article)} Words, ${calculateReadDuration(article)}`;
+            articleContent = cleanupContent(stripBlacklistedElements(articleNode, site.elementBlacklist));
+            message = `${countWords(articleContent)} Words ${calculateReadDuration(articleContent)}`;
         }
 
+        /* eslint-disable no-alert */
         alert(message);
+        /* eslint-enable no-alert */
     };
 
 
